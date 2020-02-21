@@ -9,6 +9,19 @@
 
   var wizardsAmount = 4;
 
+  window.wizard = {
+    userDialog: document.querySelector('.setup'),
+    renderWizardsBlock: function () {
+      var fragment = document.createDocumentFragment();
+      var wizards = getWizards(wizardsAmount);
+      for (var i = 0; i < wizards.length; i++) {
+        fragment.appendChild(renderWizard(wizards[i]));
+      }
+      similarListElement.appendChild(fragment);
+      this.userDialog.querySelector('.setup-similar').classList.remove('hidden');
+    }
+  };
+
   var similarListElement = window.wizard.userDialog.querySelector('.setup-similar-list');
   var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
   var userDialogWizardCoatImage = window.wizard.userDialog.querySelector('.setup-wizard .wizard-coat');
@@ -63,17 +76,4 @@
     userDialogWizardFireballElement.style.backgroundColor = fireballColor;
     userDialogFireballInput.value = fireballColor;
   });
-
-  window.wizard = {
-    userDialog: document.querySelector('.setup'),
-    renderWizardsBlock: function () {
-      var fragment = document.createDocumentFragment();
-      var wizards = getWizards(wizardsAmount);
-      for (var i = 0; i < wizards.length; i++) {
-        fragment.appendChild(renderWizard(wizards[i]));
-      }
-      similarListElement.appendChild(fragment);
-      this.userDialog.querySelector('.setup-similar').classList.remove('hidden');
-    }
-  };
 })();
