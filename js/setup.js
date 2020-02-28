@@ -10,6 +10,7 @@
   var userDialogCloseElement = window.wizard.userDialog.querySelector('.setup-close');
   var userDialogNameInput = window.wizard.userDialog.querySelector('.setup-user-name');
   var userDialogHandleElement = window.wizard.userDialog.querySelector('.upload');
+  var userDialogForm = window.wizard.userDialog.querySelector('.setup-wizard-form');
 
   var onUserDialogEscPress = function (evt) {
     if (evt.key === ESC_KEY) {
@@ -86,15 +87,38 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  var hideUserDialog = function () {
+    window.wizard.userDialog.classList.add('hidden');
+    userDialogForm.removeEventListener('submit', onUserDialogFormSubmit);
+  };
+
+  var onUserDialogFormSubmit = function (evt) {
+    window.backend.save(new FormData(userDialogForm), hideUserDialog, errorHandler);
+    evt.preventDefault();
+  };
+
   userDialogOpenElement.addEventListener('click', function () {
     openUserDialog();
-    window.wizard.renderWizardsBlock();
+    window.backend.load(window.wizard.renderWizardsBlock, errorHandler);
+    userDialogForm.addEventListener('submit', onUserDialogFormSubmit);
   });
 
   userDialogOpenElement.addEventListener('keydown', function (evt) {
     if (evt.key === ENTER_KEY) {
       openUserDialog();
-      window.wizard.renderWizardsBlock();
+      window.backend.load(window.wizard.renderWizardsBlock, errorHandler);
     }
   });
 
